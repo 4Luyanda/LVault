@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LVault Insurance - Policy Document</title>
+    <!-- PDF Generation Libraries -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <style>
+        :root {
+            --primary: #40E0D0;
+            --secondary: #745C5C;
+            --error: #FF6B6B;
+            --success: #4CAF50;
+        }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Arial', sans-serif;
+            line-height: 1.6;
+        }
+        body {
+            background-color: #FFFFFF;
+            color: #333;
+            padding: 20px;
+            max-width: 1000px;
+            margin: 0 auto;
+            background: linear-gradient(180deg, rgba(64, 224, 208, 0.05), #FFFFFF);
+        }
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid var(--primary);
+        }
+        h1 {
+            color: var(--secondary);
+            margin-bottom: 10px;
+        }
+        .policy-meta {
+            display: flex;
+            justify-content: space-between;
+            background: #f8f8f8;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+        .language-toggle {
+            text-align: right;
+            margin-bottom: 20px;
+        }
+        .language-toggle button {
+            background: none;
+            border: 1px solid var(--primary);
+            color: var(--primary);
+            padding: 5px 10px;
+            margin: 0 5px;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .language-toggle button.active {
+            background: var(--primary);
+            color: white;
+        }
+        section {
+            margin-bottom: 30px;
+            padding: 20px;
+            border-radius: 8px;
+            background: white;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+        h2 {
+            color: var(--primary);
+            margin-bottom: 15px;
+            padding-bottom: 5px;
+            border-bottom: 1px solid #eee;
+        }
+        h3 {
+            margin: 15px 0 10px;
+            color: var(--secondary);
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 15px 0;
+        }
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        .coverage-badge {
+            display: inline-block;
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-size: 0.8em;
+            font-weight: bold;
+        }
+        .covered {
+            background-color: var(--success);
+            color: white;
+        }
+        .not-covered {
+            background-color: var(--error);
+            color: white;
+        }
+        .claims-steps {
+            counter-reset: step;
+            margin-left: 20px;
+        }
+        .claims-steps li {
+            list-style: none;
+            position: relative;
+            margin-bottom: 15px;
+            padding-left: 40px;
+        }
+        .claims-steps li:before {
+            counter-increment: step;
+            content: counter(step);
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 25px;
+            height: 25px;
+            background: var(--primary);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+        .attachments {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 20px;
+        }
+        .attachment-btn {
+            display: inline-block;
+            padding: 8px 15px;
+            background: var(--primary);
+            color: white;
+            text-decoration: none;
+            border-radius: 4px;
+            transition: all 0.3s;
+            border: none;
+            cursor: pointer;
+        }
+        .attachment-btn:hover {
+            background: #36c7b8;
+            transform: translateY(-2px);
+        }
+        .back-btn {
+            display: inline-block;
+            margin-top: 30px;
+            padding: 10px 20px;
+            background: var(--secondary);
+            color: white;
+            text-decoration: none;
+            border-radius: 25px;
+            transition: all 0.3s;
+        }
+        .back-btn:hover {
+            background: #5a4a4a;
+        }
+        .hidden {
+            display: none;
+        }
+        .faq-item {
+            margin-bottom: 15px;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 15px;
+        }
+        .faq-question {
+            font-weight: bold;
+            color: var(--secondary);
+            cursor: pointer;
+            padding: 10px 0;
+        }
+        .faq-answer {
+            padding: 10px 0;
+        }
+        @media (max-width: 768px) {
+            .policy-meta {
+                flex-direction: column;
+                gap: 10px;
+            }
+            table {
+                display: block;
+                overflow-x: auto;
+            }
+        }
+        
+        /* PDF-specific styles */
+        .pdf-only {
+            display: none;
+        }
+        @media print {
+            .no-print {
+                display: none;
+            }
+            .pdf-only {
+                display: block;
+            }
+            body {
+                background: white;
+                padding: 0;
+            }
+            section {
+                box-shadow: none;
+                page-break-inside: avoid;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>LVault Insurance Policy Document</h1>
+        <p class="no-print">Your complete guide to coverage, claims, and benefits</p>
+        <div class="pdf-only">
+            <img src="https://via.placeholder.com/150x50?text=LVault+Logo" alt="LVault Logo" style="height: 50px;">
+            <p>Generated on: <span id="pdf-date"></span></p>
+        </div>
+    </header>
+
+    <div class="language-toggle no-print">
+        <button onclick="toggleLanguage('en')" class="active">English</button>
+        <button onclick="toggleLanguage('zu')">isiZulu</button>
+        <button onclick="toggleLanguage('af')">Afrikaans</button>
+    </div>
+
+    <div class="policy-meta">
+        <div>
+            <strong>Policyholder:</strong> <span id="policyholder-name">[Customer Name]</span>
+        </div>
+        <div>
+            <strong>Policy Number:</strong> LV-<span id="policy-number">[8-digit ID]</span>
+        </div>
+        <div>
+            <strong>Effective Date:</strong> <span id="effective-date">[DD/MM/YYYY]</span>
+        </div>
+    </div>
+
+    <section id="coverage-section">
+        <h2 lang="en">1. Coverage Summary</h2>
+        <h2 lang="zu" class="hidden">1. Isifinyezo Sokumbo</h2>
+        <h2 lang="af" class="hidden">1. Dekking Opsomming</h2>
+
+        <table>
+            <thead>
+                <tr>
+                    <th lang="en">Plan Type</th>
+                    <th lang="zu" class="hidden">Uhlobo Luhlelo</th>
+                    <th lang="af" class="hidden">Plan Tipe</th>
+                    <th lang="en">Covered Items</th>
+                    <th lang="zu" class="hidden">Izinto Ezihlanganisiwe</th>
+                    <th lang="af" class="hidden">Gedekte Items</th>
+                    <th lang="en">Base Premium</th>
+                    <th lang="zu" class="hidden">Imali Engeziwe</th>
+                    <th lang="af" class="hidden">Basispremie</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><strong>Screen Saver</strong></td>
+                    <td lang="en">Screen cracks, liquid damage</td>
+                    <td lang="zu" class="hidden">Ukuqhekeka kwesikrini, umonakalo woketshezi</td>
+                    <td lang="af" class="hidden">Skermkrake, vloeistofskade</td>
+                    <td>R50/month</td>
+                </tr>
+                <tr>
+                    <td><strong>Trip Shield</strong></td>
+                    <td lang="en">Theft & accidental damage during travel</td>
+                    <td lang="zu" class="hidden">Ukwebiwa nokulimala okungahleliwe ngesikhathi sohambo</td>
+                    <td lang="af" class="hidden">Diefstal & toevallige skade tydens reis</td>
+                    <td>R300/60 days</td>
+                </tr>
+                <tr>
+                    <td><strong>Full Guard</strong></td>
+                    <td lang="en">Theft, loss, accidental damage</td>
+                    <td lang="zu" class="hidden">Ukwebiwa, ukulahleka, ukulimala okungahleliwe</td>
+                    <td lang="af" class="hidden">Diefstal, verlies, toevallige skade</td>
+                    <td>R250/month</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <h3 lang="en">Special Features:</h3>
+        <h3 lang="zu" class="hidden">Izici Ezikhethekile:</h3>
+        <h3 lang="af" class="hidden">Spesiale Kenmerke:</h3>
+        <ul>
+            <li lang="en">24-hour claims processing (90% of claims)</li>
+            <li lang="zu" class="hidden">Ukucubungulwa kwezicelo zangasese kwii-24 (90% yezicelo)</li>
+            <li lang="af" class="hidden">24-uur eisprosesing (90% van eise)</li>
+            
+            <li lang="en">R500 instant micro-payouts for screen damage</li>
+            <li lang="zu" class="hidden">Ukukhokha okungoko kuka-R500 kwimonakalo yesikrini</li>
+            <li lang="af" class="hidden">R500 onmiddellike mikro-betalings vir skermskade</li>
+            
+            <li lang="en">Wellness rewards (R30/month gym/streaming credits)</li>
+            <li lang="zu" class="hidden">Imivuzo yempilo (R30/inyanga amakhredithi e-gym/ukusakaza)</li>
+            <li lang="af" class="hidden">Welness belonings (R30/maand gimnasium/stroming krediete)</li>
+        </ul>
+    </section>
+
+    <section id="whats-covered">
+        <h2 lang="en">2. What's Covered</h2>
+        <h2 lang="zu" class="hidden">2. Okuhlanganisiwe</h2>
+        <h2 lang="af" class="hidden">2. Wat Gedek Is</h2>
+
+        <h3 lang="en">A. Screen Saver Plan</h3>
+        <h3 lang="zu" class="hidden">A. Uhlelo Lokulondoloza Isikrini</h3>
+        <h3 lang="af" class="hidden">A. Skerm Saver Plan</h3>
+        
+        <p><span class="coverage-badge covered" lang="en">COVERED</span><span class="coverage-badge covered hidden" lang="zu">IHlANGANISIWE</span><span class="coverage-badge covered hidden" lang="af">GEDEK</span> Cracked/damaged screens</p>
+        <p><span class="coverage-badge covered" lang="en">COVERED</span><span class="coverage-badge covered hidden" lang="zu">IHlANGANISIWE</span><span class="coverage-badge covered hidden" lang="af">GEDEK</span> Liquid damage (submersion <30min)</p>
+        <p><span class="coverage-badge not-covered" lang="en">NOT COVERED</span><span class="coverage-badge not-covered hidden" lang="zu">AKUHLANGANISWANGA</span><span class="coverage-badge not-covered hidden" lang="af">NIE GEDEK NIE</span> Theft or lost devices</p>
+    </section>
+
+    <section id="claims-process">
+        <h2 lang="en">3. Claims Process</h2>
+        <h2 lang="zu" class="hidden">3. Inqubo Yezicelo</h2>
+        <h2 lang="af" class="hidden">3. Eis Proses</h2>
+        
+        <ol class="claims-steps">
+            <li lang="en">Log claim via LVault app (photos/video required)</li>
+            <li lang="zu" class="hidden">Faka isicelo nge-app ye-LVault (izithombe/ividiyo ezidingekayo)</li>
+            <li lang="af" class="hidden">Lod eis via LVault app (foto's/video vereis)</li>
+            
+            <li lang="en">AI review (instantly for Screen Saver, <24hr for others)</li>
+            <li lang="zu" class="hidden">Ukubuyekezwa kwe-AI (ngokushesha kwi-Screen Saver, <24hr kwezinye)</li>
+            <li lang="af" class="hidden">AI hersiening (onmiddellik vir Screen Saver, <24uur vir ander)</li>
+            
+            <li lang="en">Payout options: Instant M-Pesa, Bank transfer, or Partner repair</li>
+            <li lang="zu" class="hidden">Izinketho zokukhokha: I-M-Pesa ngokushesha, ukudluliselwa kwebhange, noma ukulungiswa kumthengisi</li>
+            <li lang="af" class="hidden">Uitbetalingsopsies: Onmiddellike M-Pesa, Bankoordrag, of Vennoot herstel</li>
+        </ol>
+    </section>
+
+    <section id="full-terms" style="display:none;">
+        <h2>LVault Insurance - Complete Terms & Conditions</h2>
+        <h3>1. Definitions</h3>
+        <p>"Device" means the insured smartphone, laptop, or bicycle as specified in your policy schedule.</p>
+        
+        <h3>2. Claims Process</h3>
+        <p>All claims must be submitted within 14 days of the incident. Fraudulent claims will result in policy termination.</p>
+        
+        <h3>3. Exclusions</h3>
+        <p>Pre-existing damage, intentional acts, and unauthorized modifications are not covered.</p>
+        
+        <h3>4. Privacy Policy</h3>
+        <p>We comply with POPIA regulations. Device data is used solely for claims assessment.</p>
+    </section>
+
+    <div class="attachments no-print">
+        <button onclick="generatePDF('coverage-section')" class="attachment-btn" lang="en">
+            Download Coverage Summary (PDF)
+        </button>
+        <button onclick="generatePDF('coverage-section', 'zu')" class="attachment-btn hidden" lang="zu">
+            Landa Isifinyezo Sokumbo (PDF)
+        </button>
+        <button onclick="generatePDF('coverage-section', 'af')" class="attachment-btn hidden" lang="af">
+            Laai Dekking Opsomming (PDF)
+        </button>
+        
+        <button onclick="generatePDF('full-terms')" class="attachment-btn" lang="en">
+            Full Terms & Conditions
+        </button>
+        <button onclick="generatePDF('full-terms', 'zu')" class="attachment-btn hidden" lang="zu">
+            Imigomo Nemibandela
+        </button>
+        <button onclick="generatePDF('full-terms', 'af')" class="attachment-btn hidden" lang="af">
+            Volledige Bepalings
+        </button>
+    </div>
+
+    <a href="index.html" class="back-btn no-print" lang="en">Back to Home</a>
+    <a href="index.html" class="back-btn hidden no-print" lang="zu">Buyela Ekhaya</a>
+    <a href="index.html" class="back-btn hidden no-print" lang="af">Terug na Tuis</a>
+
+    <script>
+        // Initialize jsPDF
+        const { jsPDF } = window.jspdf;
+        let currentLanguage = 'en';
+
+        // Language toggle functionality
+        function toggleLanguage(lang) {
+            currentLanguage = lang;
+            
+            // Update button states
+            document.querySelectorAll('.language-toggle button').forEach(btn => {
+                btn.classList.remove('active');
+                if (btn.getAttribute('onclick').includes(lang)) {
+                    btn.classList.add('active');
+                }
+            });
+            
+            // Show/hide language-specific content
+            document.querySelectorAll('[lang]').forEach(el => {
+                if (el.getAttribute('lang') === lang) {
+                    el.classList.remove('hidden');
+                } else if (el.hasAttribute('lang')) {
+                    el.classList.add('hidden');
+                }
+            });
+        }
+        
+        // PDF Generation Function
+        function generatePDF(section, lang = currentLanguage) {
+            // Get the element to print
+            const element = document.getElementById(section);
+            
+            // Clone it to avoid modifying the original
+            const elementClone = element.cloneNode(true);
+            
+            // Prepare for PDF (remove interactive elements)
+            elementClone.querySelectorAll('.no-print, button, a').forEach(el => el.remove());
+            
+            // Show only the selected language
+            elementClone.querySelectorAll(`[lang]:not([lang="${lang}"])`).forEach(el => {
+                if (!el.classList.contains('coverage-badge')) {
+                    el.remove();
+                }
+            });
+            
+            // Add PDF header
+            const pdfHeader = document.createElement('div');
+            pdfHeader.innerHTML = `
+                <div style="text-align:center; margin-bottom:20px;">
+                    <img src="https://via.placeholder.com/150x50?text=LVault+Logo" alt="LVault Logo" style="height:40px;">
+                    <h2>LVault Insurance Policy Document</h2>
+                    <p>Generated on ${new Date().toLocaleDateString()}</p>
+                    <hr>
+                </div>
+            `;
+            elementClone.prepend(pdfHeader);
+            
+            // PDF options
+            const opt = {
+                margin: 10,
+                filename: `LVault_Policy_${section}_${lang}.pdf`,
+                image: { type: 'jpeg', quality: 0.98 },
+                html2canvas: { 
+                    scale: 2,
+                    logging: true,
+                    useCORS: true,
+                    allowTaint: true
+                },
+                jsPDF: { 
+                    unit: 'mm', 
+                    format: 'a4', 
+                    orientation: 'portrait' 
+                }
+            };
+
+            // Generate PDF
+            html2pdf().set(opt).from(elementClone).save();
+        }
+
+        // FAQ toggle functionality
+        function toggleFAQ(question) {
+            const answer = question.nextElementSibling;
+            answer.style.display = answer.style.display === 'block' ? 'none' : 'block';
+        }
+        
+        // Auto-populate policy details
+        document.addEventListener('DOMContentLoaded', function() {
+            // In a real app, these would come from user data
+            document.getElementById('policyholder-name').textContent = 'Thabo Mbeki';
+            document.getElementById('policy-number').textContent = '87654321';
+            document.getElementById('effective-date').textContent = new Date().toLocaleDateString();
+            
+            // Set first FAQ as open by default
+            if (document.querySelector('.faq-answer')) {
+                document.querySelector('.faq-answer').style.display = 'block';
+            }
+            
+            // Initialize PDF date
+            document.getElementById('pdf-date').textContent = new Date().toLocaleDateString();
+        });
+    </script>
+</body>
+</html>

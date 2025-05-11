@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LVault Insurance - Initiate a Claim</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Arial', sans-serif;
+        }
+
+        body {
+            background-color: #FFFFFF;
+            color: #745C5C;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+            background: linear-gradient(180deg, rgba(64, 224, 208, 0.1), #FFFFFF);
+            padding-top: 80px;
+            overflow-x: hidden;
+        }
+
+        header {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            background: linear-gradient(90deg, #5ce1e6, #FFFFFF);
+            box-shadow: 0 2px 5px rgba(64, 52, 52, 0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 1000;
+            transition: transform 0.3s ease;
+        }
+
+        .hamburger {
+            display: none;
+            font-size: 1.5rem;
+            background: none;
+            border: none;
+            color: #745C5C;
+            cursor: pointer;
+            padding: 5px;
+        }
+
+        .hamburger:focus {
+            outline: 2px solid #40E0D0;
+        }
+
+        .nav-links {
+            display: flex;
+            list-style: none;
+        }
+
+        .nav-links a {
+            color: #745C5C;
+            text-decoration: none;
+            font-size: 1rem;
+            margin: 0 15px;
+            transition: color 0.3s;
+            padding: 5px 10px;
+        }
+
+        .nav-links a.active {
+            color: #40E0D0;
+            font-weight: bold;
+            border-bottom: 2px solid #40E0D0;
+        }
+
+        .nav-links a:hover {
+            color: #36c7b8;
+        }
+
+        .logo {
+            width: 120px;
+            height: auto;
+            padding: 5px;
+            margin-left: 0;
+        }
+
+        .back-button {
+            position: absolute;
+            top: 80px;
+            left: 20px;
+            color: #745C5C;
+            text-decoration: none;
+            font-size: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            transition: color 0.3s;
+        }
+
+        .back-button:hover {
+            color: #40E0D0;
+        }
+
+        .back-button:focus {
+            outline: 2px solid #40E0D0;
+            outline-offset: 2px;
+        }
+
+        .claim-container {
+            margin-top: 60px;
+            text-align: center;
+            max-width: 600px;
+            width: 100%;
+            animation: fadeIn 0.5s ease-in;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .headline {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #745C5C;
+            margin-bottom: 20px;
+        }
+
+        .claim-form {
+            background-color: #FFFFFF;
+            border: 2px solid #40E0D0;
+            border-radius: 10px;
+            padding: 20px;
+            text-align: left;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 1rem;
+            margin-bottom: 5px;
+        }
+
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #40E0D0;
+            border-radius: 5px;
+            font-size: 1rem;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus {
+            outline: 2px solid #40E0D0;
+            outline-offset: 2px;
+        }
+
+        .error-message {
+            color: #d32f2f;
+            font-size: 0.9rem;
+            margin-top: 5px;
+            display: none;
+        }
+
+        .submit-button {
+            background-color: #40E0D0;
+            color: #FFFFFF;
+            padding: 12px 25px;
+            font-size: 1rem;
+            font-weight: bold;
+            border: 2px solid #745C5C;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .submit-button:disabled {
+            background-color: #d3d3d3;
+            border-color: #a0a0a0;
+            cursor: not-allowed;
+        }
+
+        .submit-button:not(:disabled):hover {
+            background-color: #36c7b8;
+            transform: translateY(-2px);
+            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+        }
+
+        .submit-button:focus {
+            outline: 2px solid #40E0D0;
+            outline-offset: 2px;
+        }
+
+        footer {
+            background-color: #FFFFFF;
+            padding: 15px;
+            border-top: 2px solid #40E0D0;
+            width: 100%;
+            text-align: center;
+            margin-top: 30px;
+        }
+
+        .language-dropdown {
+            padding: 8px;
+            border: 2px solid #40E0D0;
+            border-radius: 5px;
+            font-size: 1rem;
+            color: #745C5C;
+            background-color: #FFFFFF;
+            cursor: pointer;
+            transition: border-color 0.3s;
+        }
+
+        .language-dropdown:focus {
+            outline: none;
+            border-color: #36c7b8;
+        }
+
+        @media (max-width: 768px) {
+            .hamburger {
+                display: block;
+                order: 2;
+            }
+
+            .logo {
+                order: 1;
+            }
+
+            .nav-links {
+                display: none;
+                position: absolute;
+                top: 60px;
+                left: 0;
+                right: 0;
+                background: linear-gradient(90deg, #5ce1e6, #FFFFFF);
+                flex-direction: column;
+                padding: 20px;
+                box-shadow: 0 5px 10px rgba(64, 52, 52, 0.1);
+            }
+
+            .nav-links.active {
+                display: flex;
+            }
+
+            .nav-links a {
+                margin: 10px 0;
+                padding: 10px;
+                border-bottom: 1px solid #ddd;
+            }
+
+            header {
+                flex-wrap: wrap;
+            }
+
+            .headline {
+                font-size: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+<img src="Images/lvault_image.png" alt="LVault Logo" class="logo">
+        <ul class="nav-links" id="nav-links">
+            <li><a href="index.html" class="active" aria-current="page">Home</a></li>
+            <li><a href="policy.html">Policy</a></li>
+            <li><a href="claim-initiation.html">Claims</a></li>
+            <li><a href="profile.html">Profile</a></li>
+        </ul>
+        <button class="hamburger" aria-label="Toggle navigation" aria-expanded="false" id="hamburger">☰</button>
+    </header>
+
+    <a href="index.html" class="back-button" aria-label="Go back to home">← Back</a>
+
+    <div class="claim-container">
+        <h1 class="headline">Initiate a Claim</h1>
+        <form class="claim-form" id="claim-form" novalidate>
+            <div class="form-group">
+                <label for="policy-number">Policy Number</label>
+                <input type="text" id="policy-number" name="policy-number" placeholder="Enter your policy number" aria-required="true" required>
+                <span class="error-message" id="policy-error">Please enter a valid policy number</span>
+            </div>
+            <div class="form-group">
+                <label for="gadget-type">Gadget Type</label>
+                <select id="gadget-type" name="gadget-type" aria-required="true" required>
+                    <option value="">Select a gadget</option>
+                    <option value="smartphone">Smartphone</option>
+                    <option value="laptop">Laptop</option>
+                </select>
+                <span class="error-message" id="gadget-error">Please select a gadget</span>
+            </div>
+            <div class="form-group">
+                <label for="claim-date">Date of Incident</label>
+                <input type="date" id="claim-date" name="claim-date" aria-required="true" required>
+                <span class="error-message" id="date-error">Please enter a valid date</span>
+            </div>
+            <div class="form-group">
+                <label for="description">Description</label>
+                <input type="text" id="description" name="description" placeholder="Describe the incident" aria-required="true" required>
+                <span class="error-message" id="description-error">Please provide a description</span>
+            </div>
+            <button type="submit" class="submit-button" disabled aria-label="Submit claim">Submit Claim</button>
+        </form>
+    </div>
+
+    <footer>
+        <div>
+            <select class="language-dropdown" id="language" aria-label="Select language">
+                <option value="en">English</option>
+                <option value="zu">isiZulu</option>
+                <option value="xh">isiXhosa</option>
+                <option value="st">Sesotho</option>
+                <option value="af">Afrikaans</option>
+            </select>
+        </div>
+    </footer>
+
+    <script>
+        // Mock backend simulation
+        const mockBackend = {
+            users: [],
+            quotes: [],
+            claims: [],
+            async submitClaim(claimData) {
+                const claimId = 'CLM-' + Math.random().toString(36).substr(2, 9);
+                this.claims.push({ id: claimId, ...claimData, status: 'Under Review', lastUpdated: new Date().toISOString().split('T')[0] });
+                return { success: true, claimId };
+            }
+        };
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const hamburger = document.getElementById('hamburger');
+            const navLinks = document.getElementById('nav-links');
+            const languageDropdown = document.getElementById('language');
+            const form = document.getElementById('claim-form');
+            const policyNumber = document.getElementById('policy-number');
+            const gadgetType = document.getElementById('gadget-type');
+            const claimDate = document.getElementById('claim-date');
+            const description = document.getElementById('description');
+            const submitButton = document.querySelector('.submit-button');
+            const policyError = document.getElementById('policy-error');
+            const gadgetError = document.getElementById('gadget-error');
+            const dateError = document.getElementById('date-error');
+            const descriptionError = document.getElementById('description-error');
+
+            // Toggle mobile menu
+            hamburger.addEventListener('click', function() {
+                const isExpanded = this.getAttribute('aria-expanded') === 'true';
+                this.setAttribute('aria-expanded', !isExpanded);
+                navLinks.classList.toggle('active');
+            });
+
+            // Close mobile menu on link click
+            navLinks.querySelectorAll('a').forEach(link => {
+                link.addEventListener('click', () => {
+                    if (window.innerWidth <= 768) {
+                        hamburger.setAttribute('aria-expanded', 'false');
+                        navLinks.classList.remove('active');
+                    }
+                });
+            });
+
+            // Load and save language preference
+            const savedLanguage = localStorage.getItem('selectedLanguage') || 'en';
+            languageDropdown.value = savedLanguage;
+            languageDropdown.addEventListener('change', function() {
+                localStorage.setItem('selectedLanguage', this.value);
+            });
+
+            // Form validation
+            function validateForm() {
+                let isValid = true;
+
+                if (policyNumber.value.trim() === '') {
+                    policyError.style.display = 'block';
+                    policyNumber.setAttribute('aria-invalid', 'true');
+                    isValid = false;
+                } else {
+                    policyError.style.display = 'none';
+                    policyNumber.setAttribute('aria-invalid', 'false');
+                }
+
+                if (gadgetType.value === '') {
+                    gadgetError.style.display = 'block';
+                    gadgetType.setAttribute('aria-invalid', 'true');
+                    isValid = false;
+                } else {
+                    gadgetError.style.display = 'none';
+                    gadgetType.setAttribute('aria-invalid', 'false');
+                }
+
+                if (!claimDate.value) {
+                    dateError.style.display = 'block';
+                    claimDate.setAttribute('aria-invalid', 'true');
+                    isValid = false;
+                } else {
+                    dateError.style.display = 'none';
+                    claimDate.setAttribute('aria-invalid', 'false');
+                }
+
+                if (description.value.trim() === '') {
+                    descriptionError.style.display = 'block';
+                    description.setAttribute('aria-invalid', 'true');
+                    isValid = false;
+                } else {
+                    descriptionError.style.display = 'none';
+                    description.setAttribute('aria-invalid', 'false');
+                }
+
+                submitButton.disabled = !isValid;
+                return isValid;
+            }
+
+            // Real-time validation
+            policyNumber.addEventListener('input', validateForm);
+            gadgetType.addEventListener('change', validateForm);
+            claimDate.addEventListener('change', validateForm);
+            description.addEventListener('input', validateForm);
+
+            // Form submission with backend integration
+            form.addEventListener('submit', async function(e) {
+                e.preventDefault();
+                if (validateForm()) {
+                    const claimData = {
+                        policyNumber: policyNumber.value,
+                        gadgetType: gadgetType.value,
+                        claimDate: claimDate.value,
+                        description: description.value
+                    };
+                    const response = await mockBackend.submitClaim(claimData);
+                    if (response.success) {
+                        localStorage.setItem('claimId', response.claimId);
+                        window.location.href = 'claim-details.html';
+                    } else {
+                        alert('Failed to submit claim. Please try again.');
+                    }
+                }
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LVault Insurance - Payment Confirmation</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Arial', sans-serif;
+        }
+
+        body {
+            background-color: #FFFFFF;
+            color: #745C5C;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+            background: linear-gradient(180deg, rgba(64, 224, 208, 0.1), #FFFFFF);
+            padding-top: 80px;
+            overflow-x: hidden;
+        }
+
+        header {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            background: linear-gradient(90deg, #5ce1e6, #FFFFFF);
+            box-shadow: 0 2px 5px rgba(64, 52, 52, 0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 1000;
+            transition: transform 0.3s ease;
+        }
+
+        .hamburger {
+            display: none;
+            font-size: 1.5rem;
+            background: none;
+            border: none;
+            color: #745C5C;
+            cursor: pointer;
+            padding: 5px;
+        }
+
+        .hamburger:focus {
+            outline: 2px solid #40E0D0;
+        }
+
+        .nav-links {
+            display: flex;
+            list-style: none;
+        }
+
+        .nav-links a {
+            color: #745C5C;
+            text-decoration: none;
+            font-size: 1rem;
+            margin: 0 15px;
+            transition: color 0.3s;
+            padding: 5px 10px;
+        }
+
+        .nav-links a.active {
+            color: #40E0D0;
+            font-weight: bold;
+            border-bottom: 2px solid #40E0D0;
+        }
+
+        .nav-links a:hover {
+            color: #36c7b8;
+        }
+
+        .logo {
+            width: 120px;
+            height: auto;
+            padding: 5px;
+            margin-left: 0;
+        }
+
+        .confirmation-container {
+            margin-top: 60px;
+            text-align: center;
+            max-width: 600px;
+            width: 100%;
+            animation: fadeIn 0.5s ease-in;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .headline {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #745C5C;
+            margin-bottom: 20px;
+        }
+
+        .confirmation-message {
+            font-size: 1.2rem;
+            margin-bottom: 30px;
+            color: #40E0D0;
+            background-color: #FFFFFF;
+            border: 2px solid #40E0D0;
+            border-radius: 10px;
+            padding: 20px;
+        }
+
+        .action-button {
+            background-color: #40E0D0;
+            color: #FFFFFF;
+            padding: 12px 25px;
+            font-size: 1rem;
+            font-weight: bold;
+            border: 2px solid #745C5C;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+            margin: 10px;
+        }
+
+        .action-button:hover {
+            background-color: #36c7b8;
+            transform: translateY(-2px);
+            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+        }
+
+        .action-button:focus {
+            outline: 2px solid #40E0D0;
+            outline-offset: 2px;
+        }
+
+        footer {
+            background-color: #FFFFFF;
+            padding: 15px;
+            border-top: 2px solid #40E0D0;
+            width: 100%;
+            text-align: center;
+            margin-top: 30px;
+        }
+
+        .language-dropdown {
+            padding: 8px;
+            border: 2px solid #40E0D0;
+            border-radius: 5px;
+            font-size: 1rem;
+            color: #745C5C;
+            background-color: #FFFFFF;
+            cursor: pointer;
+            transition: border-color 0.3s;
+        }
+
+        .language-dropdown:focus {
+            outline: none;
+            border-color: #36c7b8;
+        }
+
+        @media (max-width: 768px) {
+            .hamburger {
+                display: block;
+                order: 2;
+            }
+
+            .logo {
+                order: 1;
+            }
+
+            .nav-links {
+                display: none;
+                position: absolute;
+                top: 60px;
+                left: 0;
+                right: 0;
+                background: linear-gradient(90deg, #5ce1e6, #FFFFFF);
+                flex-direction: column;
+                padding: 20px;
+                box-shadow: 0 5px 10px rgba(64, 52, 52, 0.1);
+            }
+
+            .nav-links.active {
+                display: flex;
+            }
+
+            .nav-links a {
+                margin: 10px 0;
+                padding: 10px;
+                border-bottom: 1px solid #ddd;
+            }
+
+            header {
+                flex-wrap: wrap;
+            }
+
+            .headline {
+                font-size: 1.5rem;
+            }
+
+            .action-button {
+                display: block;
+                margin: 10px auto;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+<img src="Images/lvault_image.png" alt="LVault Logo" class="logo">
+        <ul class="nav-links" id="nav-links">
+            <li><a href="index.html" class="active" aria-current="page">Home</a></li>
+            <li><a href="policy.html">Policy</a></li>
+            <li><a href="claim-initiation.html">Claims</a></li>
+            <li><a href="profile.html">Profile</a></li>
+        </ul>
+        <button class="hamburger" aria-label="Toggle navigation" aria-expanded="false" id="hamburger">☰</button>
+    </header>
+
+    <div class="confirmation-container">
+        <h1 class="headline">Payment Confirmed!</h1>
+        <p class="confirmation-message" role="alert">Thank you for insuring your gadget with LVault. You're now protected!</p>
+
+        <a href="index.html" class="action-button" aria-label="Go to homepage">Go to Homepage</a>
+        <a href="claim-initiation.html" class="action-button" aria-label="File a claim">File a Claim</a>
+        <a href="policy.html" class="action-button" aria-label="View policy">View Policy</a>
+    </div>
+
+    <footer>
+        <div>
+            <select class="language-dropdown" id="language" aria-label="Select language">
+                <option value="en">English</option>
+                <option value="zu">isiZulu</option>
+                <option value="xh">isiXhosa</option>
+                <option value="st">Sesotho</option>
+                <option value="af">Afrikaans</option>
+            </select>
+        </div>
+    </footer>
+
+    <script>
+        // Mock backend simulation
+        const mockBackend = {
+            users: [],
+            quotes: [],
+            async confirmPayment(quoteId) {
+                const quote = this.quotes.find(q => q.id === quoteId);
+                if (quote) {
+                    quote.status = 'Paid';
+                    return { success: true, quote };
+                }
+                return { success: false, message: 'Quote not found' };
+            }
+        };
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const hamburger = document.getElementById('hamburger');
+            const navLinks = document.getElementById('nav-links');
+            const languageDropdown = document.getElementById('language');
+            const confirmationMessage = document.querySelector('.confirmation-message');
+
+            // Toggle mobile menu
+            hamburger.addEventListener('click', function() {
+                const isExpanded = this.getAttribute('aria-expanded') === 'true';
+                this.setAttribute('aria-expanded', !isExpanded);
+                navLinks.classList.toggle('active');
+            });
+
+            // Close mobile menu on link click
+            navLinks.querySelectorAll('a').forEach(link => {
+                link.addEventListener('click', () => {
+                    if (window.innerWidth <= 768) {
+                        hamburger.setAttribute('aria-expanded', 'false');
+                        navLinks.classList.remove('active');
+                    }
+                });
+            });
+
+            // Load and save language preference
+            const savedLanguage = localStorage.getItem('selectedLanguage') || 'en';
+            languageDropdown.value = savedLanguage;
+            languageDropdown.addEventListener('change', function() {
+                localStorage.setItem('selectedLanguage', this.value);
+            });
+
+            // Simulate payment confirmation with backend
+            (async () => {
+                const quoteId = localStorage.getItem('quoteId') || 'QT-2025-001';
+                const response = await mockBackend.confirmPayment(quoteId);
+                if (!response.success) {
+                    confirmationMessage.textContent = 'Payment confirmation failed. Please contact support.';
+                    confirmationMessage.style.color = '#d32f2f';
+                }
+            })();
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,496 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LVault Insurance - Review Quote</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Arial', sans-serif;
+        }
+
+        body {
+            background-color: #FFFFFF;
+            color: #745C5C;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+            background: linear-gradient(180deg, rgba(64, 224, 208, 0.1), #FFFFFF);
+            padding-top: 80px;
+            overflow-x: hidden;
+        }
+
+        header {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            background: linear-gradient(90deg, #5ce1e6, #FFFFFF);
+            box-shadow: 0 2px 5px rgba(64, 52, 52, 0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 1000;
+            transition: transform 0.3s ease;
+        }
+
+        .hamburger {
+            display: none;
+            font-size: 1.5rem;
+            background: none;
+            border: none;
+            color: #745C5C;
+            cursor: pointer;
+            padding: 5px;
+        }
+
+        .hamburger:focus {
+            outline: 2px solid #40E0D0;
+        }
+
+        .nav-links {
+            display: flex;
+            list-style: none;
+        }
+
+        .nav-links a {
+            color: #745C5C;
+            text-decoration: none;
+            font-size: 1rem;
+            margin: 0 15px;
+            transition: color 0.3s;
+            padding: 5px 10px;
+        }
+
+        .nav-links a.active {
+            color: #40E0D0;
+            font-weight: bold;
+            border-bottom: 2px solid #40E0D0;
+        }
+
+        .nav-links a:hover {
+            color: #36c7b8;
+        }
+
+        .logo {
+            width: 120px;
+            height: auto;
+            padding: 5px;
+            margin-left: 0;
+        }
+
+        .back-button {
+            position: absolute;
+            top: 80px;
+            left: 20px;
+            color: #745C5C;
+            text-decoration: none;
+            font-size: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            transition: color 0.3s;
+        }
+
+        .back-button:hover {
+            color: #40E0D0;
+        }
+
+        .back-button:focus {
+            outline: 2px solid #40E0D0;
+            outline-offset: 2px;
+        }
+
+        .quote-container {
+            margin-top: 60px;
+            text-align: center;
+            max-width: 600px;
+            width: 100%;
+            animation: fadeIn 0.5s ease-in;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .headline {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #745C5C;
+            margin-bottom: 20px;
+        }
+
+        .summary {
+            background-color: #FFFFFF;
+            border: 2px solid #40E0D0;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 30px;
+            text-align: left;
+        }
+
+        .summary-item {
+            margin: 10px 0;
+            font-size: 1.1rem;
+        }
+
+        .input-group {
+            text-align: left;
+            margin-bottom: 20px;
+        }
+
+        .input-group label {
+            display: block;
+            font-size: 1rem;
+            margin-bottom: 5px;
+        }
+
+        .input-group input, .input-group select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #40E0D0;
+            border-radius: 5px;
+            font-size: 1rem;
+        }
+
+        .input-group input:focus, .input-group select:focus {
+            outline: 2px solid #40E0D0;
+            outline-offset: 2px;
+        }
+
+        .error-message {
+            color: #d32f2f;
+            font-size: 0.9rem;
+            margin-top: 5px;
+            display: none;
+        }
+
+        .checkbox-group {
+            text-align: left;
+            margin: 20px 0;
+            font-size: 1rem;
+        }
+
+        .checkbox-group a {
+            color: #40E0D0;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        .checkbox-group a:hover {
+            color: #36c7b8;
+        }
+
+        .checkbox-group a:focus {
+            outline: 2px solid #40E0D0;
+            outline-offset: 2px;
+        }
+
+        .get-insured-button {
+            background-color: #40E0D0;
+            color: #FFFFFF;
+            padding: 12px 25px;
+            font-size: 1rem;
+            font-weight: bold;
+            border: 2px solid #745C5C;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .get-insured-button:disabled {
+            background-color: #d3d3d3;
+            border-color: #a0a0a0;
+            cursor: not-allowed;
+        }
+
+        .get-insured-button:not(:disabled):hover {
+            background-color: #36c7b8;
+        }
+
+        .get-insured-button:focus {
+            outline: 2px solid #40E0D0;
+            outline-offset: 2px;
+        }
+
+        footer {
+            background-color: #FFFFFF;
+            padding: 15px;
+            border-top: 2px solid #40E0D0;
+            width: 100%;
+            text-align: center;
+            margin-top: 30px;
+        }
+
+        .language-dropdown {
+            padding: 8px;
+            border: 2px solid #40E0D0;
+            border-radius: 5px;
+            font-size: 1rem;
+            color: #745C5C;
+            background-color: #FFFFFF;
+            cursor: pointer;
+            transition: border-color 0.3s;
+        }
+
+        .language-dropdown:focus {
+            outline: none;
+            border-color: #36c7b8;
+        }
+
+        @media (max-width: 768px) {
+            .hamburger {
+                display: block;
+                order: 2;
+            }
+
+            .logo {
+                order: 1;
+            }
+
+            .nav-links {
+                display: none;
+                position: absolute;
+                top: 60px;
+                left: 0;
+                right: 0;
+                background: linear-gradient(90deg, #5ce1e6, #FFFFFF);
+                flex-direction: column;
+                padding: 20px;
+                box-shadow: 0 5px 10px rgba(64, 52, 52, 0.1);
+            }
+
+            .nav-links.active {
+                display: flex;
+            }
+
+            .nav-links a {
+                margin: 10px 0;
+                padding: 10px;
+                border-bottom: 1px solid #ddd;
+            }
+
+            header {
+                flex-wrap: wrap;
+            }
+
+            .headline {
+                font-size: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <img src="Images/lvault_image.png" alt="LVault Logo" class="logo">
+        <ul class="nav-links" id="nav-links">
+            <li><a href="index.html" class="active" aria-current="page">Home</a></li>
+            <li><a href="policy.html">Policy</a></li>
+            <li><a href="claim-initiation.html">Claims</a></li>
+            <li><a href="profile.html">Profile</a></li>
+        </ul>
+        <button class="hamburger" aria-label="Toggle navigation" aria-expanded="false" id="hamburger">☰</button>
+    </header>
+
+    <a href="select-coverage.html" class="back-button" aria-label="Go back to select coverage">← Back</a>
+
+    <div class="quote-container">
+        <h1 class="headline">Review Your Quote</h1>
+
+        <div class="summary" role="region" aria-label="Quote summary">
+            <div class="summary-item">Gadget: <span id="gadget-summary">Smartphone</span></div>
+            <div class="summary-item">Coverage: <span id="coverage-summary">Screen Saver Plan</span></div>
+            <div class="summary-item">Monthly Premium: <span id="premium-summary">R50</span></div>
+        </div>
+
+        <form id="quote-form" novalidate>
+            <div class="input-group">
+                <label for="full-name">Full Name</label>
+                <input type="text" id="full-name" name="full-name" placeholder="Enter your full name" aria-required="true" required>
+                <span class="error-message" id="full-name-error">Please enter your full name</span>
+            </div>
+
+            <div class="input-group">
+                <label for="email">Email Address</label>
+                <input type="email" id="email" name="email" placeholder="Enter your email" aria-required="true" required>
+                <span class="error-message" id="email-error">Please enter a valid email address</span>
+            </div>
+
+            <div class="input-group">
+                <label for="mobile">Mobile Number</label>
+                <input type="tel" id="mobile" name="mobile" placeholder="Enter your mobile number" aria-required="true" required>
+                <span class="error-message" id="mobile-error">Please enter a valid mobile number</span>
+            </div>
+
+            <div class="checkbox-group">
+                <input type="checkbox" id="terms" name="terms" aria-required="true" required>
+                <label for="terms">I agree to the <a href="#" target="_blank" aria-label="View terms and conditions">terms and conditions</a></label>
+                <span class="error-message" id="terms-error">You must agree to the terms and conditions</span>
+            </div>
+
+            <button type="submit" class="get-insured-button" disabled aria-label="Proceed to payment confirmation">Get Insured</button>
+        </form>
+    </div>
+
+    <footer>
+        <div>
+            <select class="language-dropdown" id="language" aria-label="Select language">
+                <option value="en">English</option>
+                <option value="zu">isiZulu</option>
+                <option value="xh">isiXhosa</option>
+                <option value="st">Sesotho</option>
+                <option value="af">Afrikaans</option>
+            </select>
+        </div>
+    </footer>
+
+    <script>
+        // Mock backend simulation
+        const mockBackend = {
+            users: [],
+            quotes: [],
+            claims: [],
+            async saveQuote(userData) {
+                const quoteId = 'QT-' + Math.random().toString(36).substr(2, 9);
+                this.quotes.push({ id: quoteId, ...userData });
+                return { success: true, quoteId };
+            }
+        };
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const hamburger = document.getElementById('hamburger');
+            const navLinks = document.getElementById('nav-links');
+            const languageDropdown = document.getElementById('language');
+            const form = document.getElementById('quote-form');
+            const fullName = document.getElementById('full-name');
+            const email = document.getElementById('email');
+            const mobile = document.getElementById('mobile');
+            const terms = document.getElementById('terms');
+            const getInsuredButton = document.querySelector('.get-insured-button');
+            const fullNameError = document.getElementById('full-name-error');
+            const emailError = document.getElementById('email-error');
+            const mobileError = document.getElementById('mobile-error');
+            const termsError = document.getElementById('terms-error');
+
+            // Toggle mobile menu
+            hamburger.addEventListener('click', function() {
+                const isExpanded = this.getAttribute('aria-expanded') === 'true';
+                this.setAttribute('aria-expanded', !isExpanded);
+                navLinks.classList.toggle('active');
+            });
+
+            // Close mobile menu on link click
+            navLinks.querySelectorAll('a').forEach(link => {
+                link.addEventListener('click', () => {
+                    if (window.innerWidth <= 768) {
+                        hamburger.setAttribute('aria-expanded', 'false');
+                        navLinks.classList.remove('active');
+                    }
+                });
+            });
+
+            // Load and save language preference
+            const savedLanguage = localStorage.getItem('selectedLanguage') || 'en';
+            languageDropdown.value = savedLanguage;
+            languageDropdown.addEventListener('change', function() {
+                localStorage.setItem('selectedLanguage', this.value);
+            });
+
+            // Retrieve selected gadget and coverage
+            const selectedGadget = localStorage.getItem('selectedGadget') || 'Smartphone';
+            const selectedCoverage = localStorage.getItem('selectedCoverage') || 'screen-saver';
+            document.getElementById('gadget-summary').textContent = selectedGadget.charAt(0).toUpperCase() + selectedGadget.slice(1);
+            if (selectedCoverage === 'screen-saver') {
+                document.getElementById('coverage-summary').textContent = 'Screen Saver Plan';
+                document.getElementById('premium-summary').textContent = 'R50';
+            } else if (selectedCoverage === 'trip-protection') {
+                document.getElementById('coverage-summary').textContent = 'Trip Protection Plan';
+                document.getElementById('premium-summary').textContent = 'R300 for 60 days';
+            }
+
+            // Email and mobile validation regex
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            const mobileRegex = /^\+?\d{10,15}$/;
+
+            function validateForm() {
+                let isValid = true;
+
+                // Full Name
+                if (fullName.value.trim() === '') {
+                    fullNameError.style.display = 'block';
+                    fullName.setAttribute('aria-invalid', 'true');
+                    isValid = false;
+                } else {
+                    fullNameError.style.display = 'none';
+                    fullName.setAttribute('aria-invalid', 'false');
+                }
+
+                // Email
+                if (!emailRegex.test(email.value.trim())) {
+                    emailError.style.display = 'block';
+                    email.setAttribute('aria-invalid', 'true');
+                    isValid = false;
+                } else {
+                    emailError.style.display = 'none';
+                    email.setAttribute('aria-invalid', 'false');
+                }
+
+                // Mobile
+                if (!mobileRegex.test(mobile.value.trim())) {
+                    mobileError.style.display = 'block';
+                    mobile.setAttribute('aria-invalid', 'true');
+                    isValid = false;
+                } else {
+                    mobileError.style.display = 'none';
+                    mobile.setAttribute('aria-invalid', 'false');
+                }
+
+                // Terms
+                if (!terms.checked) {
+                    termsError.style.display = 'block';
+                    terms.setAttribute('aria-invalid', 'true');
+                    isValid = false;
+                } else {
+                    termsError.style.display = 'none';
+                    terms.setAttribute('aria-invalid', 'false');
+                }
+
+                getInsuredButton.disabled = !isValid;
+                return isValid;
+            }
+
+            // Real-time validation
+            fullName.addEventListener('input', validateForm);
+            email.addEventListener('input', validateForm);
+            mobile.addEventListener('input', validateForm);
+            terms.addEventListener('change', validateForm);
+
+            // Form submission with backend integration
+            form.addEventListener('submit', async function(e) {
+                e.preventDefault();
+                if (validateForm()) {
+                    const userData = {
+                        gadget: localStorage.getItem('selectedGadget'),
+                        coverage: localStorage.getItem('selectedCoverage'),
+                        fullName: fullName.value,
+                        email: email.value,
+                        mobile: mobile.value
+                    };
+                    const response = await mockBackend.saveQuote(userData);
+                    if (response.success) {
+                        localStorage.setItem('quoteId', response.quoteId);
+                        window.location.href = 'payment-confirmation.html';
+                    } else {
+                        alert('Failed to save quote');
+                    }
+                }
+            });
+        });
+    </script>
+</body>
+</html>
